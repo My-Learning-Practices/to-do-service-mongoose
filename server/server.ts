@@ -1,4 +1,4 @@
-// import crudOperations from "../database/crudOperations";
+import crudOperations from "../database/crudOperations";
 import express from "express";
 
 var bodyParser = require("body-parser");
@@ -13,20 +13,20 @@ app.use(bodyParser.json());
 app
   .route("/")
   .get(async (req: express.Request, res: express.Response) => {
-    const filter = req.query.priority?.toString() || "";
-    console.log(filter);
+    const filter = req.query.priority?.toString();
 
-    // res.send(await crudOperations.findAllTask(filter));
+    if (filter === undefined) res.send(await crudOperations.getAllTasks());
+    else res.send(await crudOperations.findTask(filter));
   })
   .post((req: express.Request, res: express.Response) => {
     const taskDeatils = req.body.taskDeatils;
-    // crudOperations.upsertTask(taskDeatils);
+    crudOperations.addtask(taskDeatils);
   })
   .delete(async (req: express.Request, res: express.Response) => {
     const taskId = req.body.id;
-    // await crudOperations.deleteTask(taskId);
+    res.send(await crudOperations.deleteTask(taskId));
   });
 
 app.listen(3000, () => {
-  console.log("Server started at port 3000");
+  console.info("Server started at port 3000");
 });
